@@ -6,26 +6,35 @@ import {
     useEdits,
     type LineBody,
 } from "@/hooks/useEdits";
+import { usePendingEdits } from "@/hooks/usePendingEdits";
+import {
+    normalizeCoordinate
+} from "@/utils/canvasCoordinates";
 import { getUrl } from 'aws-amplify/storage';
 import type { KonvaEventObject } from "konva/lib/Node";
 import { useEffect, useRef, useState } from "react";
-import { Image, Layer, Line, Stage } from "react-konva";
+import { Image, Layer, Stage } from "react-konva";
 import useImage from 'use-image';
+import { DrawingLines } from "./DrawingLines";
 
 export default function Canvas({ roomId, imagePath, stageRef }: { roomId: string, imagePath: string, stageRef: any }) {
     const { edits, isLoading, error } = useEdits(roomId);
+    const { pendingEdits, addPendingEdit, removePendingEdit, markAsConfirmed } = usePendingEdits(edits);
     const [currentLine, setCurrentLine] = useState<LineBody | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [imageUrl, setImageUrl] = useState<string>("");
+    const [canvasSize, setCanvasSize] = useState({ width: 800, height: 1200 });
+    const containerRef = useRef<HTMLDivElement>(null);
     const isDrawingRef = useRef(false);
 
+    // 画像URLを取得
     useEffect(() => {
         const fetchImageUrl = async () => {
             try {
                 const { url } = await getUrl({
                     path: imagePath,
                     options: {
-                        validateObjectExistence: true, // 存在確認を有効化
+                        validateObjectExistence: true,
                     }
                 });
                 setImageUrl(url.toString());
@@ -36,32 +45,55 @@ export default function Canvas({ roomId, imagePath, stageRef }: { roomId: string
         fetchImageUrl();
     }, [imagePath]);
 
+    // キャンバスサイズを管理
+    useEffect(() => {
+        const updateCanvasSize = () => {
+            if (containerRef.current) {
+                const containerWidth = containerRef.current.offsetWidth;
+                const width = containerWidth;
+                const height = width * 1.5;
+                setCanvasSize({ width, height });
+            }
+        };
+
+        updateCanvasSize();
+        window.addEventListener('resize', updateCanvasSize);
+        return () => window.removeEventListener('resize', updateCanvasSize);
+    }, []);
+
     const [image] = useImage(imageUrl, 'anonymous');
 
-    const handleMouseDown = (e: KonvaEventObject<any, any>) => {
+    const getPointerPosition = () => {
+        if (!stageRef.current) return null;
+        const pos = stageRef.current.getPointerPosition();
+        if (!pos) return null;
+        return normalizeCoordinate(pos.x, pos.y, canvasSize.width, canvasSize.height);
+    }
+
+    const handleStartDrawing = (e: KonvaEventObject<any, any>) => {
         isDrawingRef.current = true;
-        const pos = stageRef.current?.getPointerPosition();
-        if (!pos) return;
+        const normalized = getPointerPosition();
+        if (!normalized) return;
         setCurrentLine({
-            points: [pos.x, pos.y],
+            points: [normalized.x, normalized.y],
             color: "black",
             strokeWidth: 2,
         });
     };
 
-    const handleMouseMove = (e: KonvaEventObject<any, any>) => {
+    const handleContinueDrawing = (e: KonvaEventObject<any, any>) => {
         if (!isDrawingRef.current || !currentLine || !stageRef.current) {
             return;
         }
-        const pos = stageRef.current.getPointerPosition();
-        if (!pos) return;
+        const normalized = getPointerPosition();
+        if (!normalized) return;
         setCurrentLine({
             ...currentLine,
-            points: [...currentLine.points, pos.x, pos.y],
+            points: [...currentLine.points, normalized.x, normalized.y],
         });
     };
 
-    const handleMouseUp = async () => {
+    const handleEndDrawing = async () => {
         isDrawingRef.current = false;
 
         if (!currentLine) {
@@ -70,88 +102,68 @@ export default function Canvas({ roomId, imagePath, stageRef }: { roomId: string
 
         try {
             setErrorMessage(null);
-            await createEdit(roomId, currentLine);
+            addPendingEdit(currentLine);
+            setCurrentLine(null);
+
+            const result = await createEdit(roomId, currentLine);
+            if (result.timestamp) {
+                markAsConfirmed(result.timestamp);
+            }
         } catch (error) {
             const message =
                 error instanceof Error ? error.message : "Failed to save drawing";
             setErrorMessage(message);
             console.error("Error creating edit:", error);
+            removePendingEdit(`temp-${Date.now()}-*`);
         }
-
-        setCurrentLine(null);
     };
 
     if (error) {
         return (
-            <div style={{ border: "1px solid #ccc", padding: "20px", color: "red" }}>
+            <div className="border border-gray-300 p-5 text-red-600">
                 Failed to load edits: {error.message}
             </div>
         );
     }
 
+    const confirmedLines = edits
+        .filter((edit) => !edit.isSkipped)
+        .map(parseEditBody)
+        .filter((line): line is LineBody => line !== null);
+
     return (
         <>
-            <div style={{ border: "1px solid #ccc" }}>
-                {errorMessage && (
-                    <div
-                        style={{
-                            backgroundColor: "#ffebee",
-                            color: "#c62828",
-                            padding: "8px",
-                            marginBottom: "8px",
-                        }}
+            <div className="w-full px-5">
+                <div ref={containerRef} className="border border-gray-300 w-full">
+                    {errorMessage && (
+                        <div className="bg-red-50 text-red-800 p-2 mb-2">
+                            {errorMessage}
+                        </div>
+                    )}
+                    <Stage
+                        ref={stageRef}
+                        width={canvasSize.width}
+                        height={canvasSize.height}
+                        onMouseDown={handleStartDrawing}
+                        onMouseMove={handleContinueDrawing}
+                        onMouseUp={handleEndDrawing}
+                        onTouchStart={handleStartDrawing}
+                        onTouchMove={handleContinueDrawing}
+                        onTouchEnd={handleEndDrawing}
                     >
-                        {errorMessage}
-                    </div>
-                )}
-                <Stage
-                    ref={stageRef}
-                    width={800}
-                    height={600}
-                    onMouseDown={handleMouseDown}
-                    onMouseMove={handleMouseMove}
-                    onMouseUp={handleMouseUp}
-                >
-                    <Layer>
-                        <Image image={image} width={800} height={600} />
-                    </Layer>
-                    <Layer>
-                        {edits
-                            .filter((edit) => !edit.isSkipped)
-                            .map((edit) => {
-                                const bodyData = parseEditBody(edit);
-                                if (!bodyData) {
-                                    return null;
-                                }
-                                switch (edit.type) {
-                                    case "line":
-                                        return (
-                                            <Line
-                                                key={edit.timestamp}
-                                                points={bodyData.points}
-                                                stroke={bodyData.color}
-                                                strokeWidth={bodyData.strokeWidth}
-                                                tension={0.5}
-                                                lineCap="round"
-                                                lineJoin="round"
-                                            />
-                                        );
-                                    default:
-                                        return null;
-                                }
-                            })}
-                        {currentLine && (
-                            <Line
-                                points={currentLine.points}
-                                stroke={currentLine.color}
-                                strokeWidth={currentLine.strokeWidth}
-                                tension={0.5}
-                                lineCap="round"
-                                lineJoin="round"
+                        <Layer>
+                            <Image image={image} width={canvasSize.width} height={canvasSize.height} />
+                        </Layer>
+                        <Layer>
+                            <DrawingLines
+                                confirmedLines={confirmedLines}
+                                pendingLines={pendingEdits}
+                                currentLine={currentLine}
+                                canvasSize={canvasSize}
                             />
-                        )}
-                    </Layer>
-                </Stage>
+                        </Layer>
+                    </Stage>
+                </div>
             </div>
         </>
     );

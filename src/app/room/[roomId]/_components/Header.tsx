@@ -37,7 +37,7 @@ export default function Header({ stageRef }: { stageRef: any }) {
 
 
     return (
-        <header className="w-full h-18 flex items-center justify-between px-5 bg-[#0000001a]">
+        <header className="w-full h-18 flex items-center justify-between px-5 mb-5 bg-[#0000001a]">
             <button
                 onClick={handleShareClick}
                 className="h-10 px-4 bg-white shadow-[0px_1px_4px_#00000040] inline-flex items-center justify-center rounded-[10px] cursor-pointer transition-transform active:scale-95 hover:shadow-[0px_2px_6px_#00000040]"
