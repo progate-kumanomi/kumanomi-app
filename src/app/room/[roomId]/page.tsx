@@ -1,7 +1,5 @@
 import { cookiesClient } from "@/utils/amplifyServerUtils";
-import Canvas from "./_components/Canvas";
-import Header from "./_components/Header";
-
+import Room from "./_components/Room";
 export default async function Page({ params }: { params: { roomId: string } }) {
     const { roomId } = await params;
 
@@ -14,8 +12,7 @@ export default async function Page({ params }: { params: { roomId: string } }) {
 
     return (
         <>
-            <Header />
-            <Canvas roomId={roomId} imagePath={imagePath} />
+            <Room roomId={roomId} imagePath={imagePath} />
         </>
     );
 }

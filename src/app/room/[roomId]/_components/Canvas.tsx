@@ -12,13 +12,12 @@ import { useEffect, useRef, useState } from "react";
 import { Image, Layer, Line, Stage } from "react-konva";
 import useImage from 'use-image';
 
-export default function Canvas({ roomId, imagePath }: { roomId: string, imagePath: string }) {
+export default function Canvas({ roomId, imagePath, stageRef }: { roomId: string, imagePath: string, stageRef: any }) {
     const { edits, isLoading, error } = useEdits(roomId);
     const [currentLine, setCurrentLine] = useState<LineBody | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [imageUrl, setImageUrl] = useState<string>("");
     const isDrawingRef = useRef(false);
-    const stageRef = useRef<any>(null);
 
     useEffect(() => {
         const fetchImageUrl = async () => {
@@ -37,7 +36,7 @@ export default function Canvas({ roomId, imagePath }: { roomId: string, imagePat
         fetchImageUrl();
     }, [imagePath]);
 
-    const [image] = useImage(imageUrl);
+    const [image] = useImage(imageUrl, 'anonymous');
 
     const handleMouseDown = (e: KonvaEventObject<any, any>) => {
         isDrawingRef.current = true;
