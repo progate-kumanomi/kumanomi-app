@@ -20,10 +20,14 @@ import { DrawingLines } from "./DrawingLines";
 export default function Canvas({ roomId, imagePath, stageRef }: { roomId: string, imagePath: string, stageRef: any }) {
     const { edits, isLoading, error } = useEdits(roomId);
     const { pendingEdits, addPendingEdit, removePendingEdit, markAsConfirmed } = usePendingEdits(edits);
+
     const [currentLine, setCurrentLine] = useState<LineBody | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [imageUrl, setImageUrl] = useState<string>("");
     const [canvasSize, setCanvasSize] = useState({ width: 800, height: 1200 });
+    const [color, setColor] = useState<string>("#000000");
+    const [strokeWidth, setStrokeWidth] = useState<number>(2);
+
     const containerRef = useRef<HTMLDivElement>(null);
     const isDrawingRef = useRef(false);
 
@@ -49,9 +53,8 @@ export default function Canvas({ roomId, imagePath, stageRef }: { roomId: string
     useEffect(() => {
         const updateCanvasSize = () => {
             if (containerRef.current) {
-                const containerWidth = containerRef.current.offsetWidth;
-                const width = containerWidth;
-                const height = width * 1.5;
+                const width = containerRef.current.offsetWidth;
+                const height = containerRef.current.offsetHeight;
                 setCanvasSize({ width, height });
             }
         };
@@ -76,8 +79,8 @@ export default function Canvas({ roomId, imagePath, stageRef }: { roomId: string
         if (!normalized) return;
         setCurrentLine({
             points: [normalized.x, normalized.y],
-            color: "black",
-            strokeWidth: 2,
+            color: color,
+            strokeWidth: strokeWidth,
         });
     };
 
@@ -133,36 +136,60 @@ export default function Canvas({ roomId, imagePath, stageRef }: { roomId: string
 
     return (
         <>
-            <div className="w-full px-5">
-                <div ref={containerRef} className="border border-gray-300 w-full">
-                    {errorMessage && (
-                        <div className="bg-red-50 text-red-800 p-2 mb-2">
-                            {errorMessage}
-                        </div>
-                    )}
-                    <Stage
-                        ref={stageRef}
-                        width={canvasSize.width}
-                        height={canvasSize.height}
-                        onMouseDown={handleStartDrawing}
-                        onMouseMove={handleContinueDrawing}
-                        onMouseUp={handleEndDrawing}
-                        onTouchStart={handleStartDrawing}
-                        onTouchMove={handleContinueDrawing}
-                        onTouchEnd={handleEndDrawing}
+            {/* キャンバス */}
+            <div className="px-5">
+                <div className="w-full @container flex justify-center">
+                    <div
+                        ref={containerRef}
+                        className="border border-gray-300 w-[100cqw] h-[calc(100cqw*3/2)] md:h-[calc(100cqh-12rem)] md:w-[calc((100cqh-12rem)*2/3)]"
                     >
-                        <Layer>
-                            <Image image={image} width={canvasSize.width} height={canvasSize.height} />
-                        </Layer>
-                        <Layer>
-                            <DrawingLines
-                                confirmedLines={confirmedLines}
-                                pendingLines={pendingEdits}
-                                currentLine={currentLine}
-                                canvasSize={canvasSize}
-                            />
-                        </Layer>
-                    </Stage>
+                        {errorMessage && (
+                            <div className="bg-red-50 text-red-800 p-2 mb-2">
+                                {errorMessage}
+                            </div>
+                        )}
+                        <Stage
+                            ref={stageRef}
+                            width={canvasSize.width}
+                            height={canvasSize.height}
+                            onMouseDown={handleStartDrawing}
+                            onMouseMove={handleContinueDrawing}
+                            onMouseUp={handleEndDrawing}
+                            onTouchStart={handleStartDrawing}
+                            onTouchMove={handleContinueDrawing}
+                            onTouchEnd={handleEndDrawing}
+                        >
+                            <Layer>
+                                <Image image={image} width={canvasSize.width} height={canvasSize.height} />
+                            </Layer>
+                            <Layer>
+                                <DrawingLines
+                                    confirmedLines={confirmedLines}
+                                    pendingLines={pendingEdits}
+                                    currentLine={currentLine}
+                                    canvasSize={canvasSize}
+                                />
+                            </Layer>
+                        </Stage>
+                    </div>
+                </div>
+            </div>
+            {/* カラーピッカー・太さスライダー */}
+            <div className="flex items-center space-x-4 mt-4 px-5">
+                <div className="flex items-center space-x-2">
+                    <label htmlFor="color" className="text-sm">Color:</label>
+                    <input type="color" id="color" value={color} onChange={(e) => setColor(e.target.value)} />
+                </div>
+                <div className="flex items-center space-x-2">
+                    <label htmlFor="strokeWidth" className="text-sm">Stroke Width:</label>
+                    <input
+                        type="range"
+                        id="strokeWidth"
+                        min="1"
+                        max="20"
+                        value={strokeWidth}
+                        onChange={(e) => setStrokeWidth(parseInt(e.target.value))}
+                    />
                 </div>
             </div>
         </>
