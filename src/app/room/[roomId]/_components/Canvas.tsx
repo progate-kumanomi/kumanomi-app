@@ -1,22 +1,41 @@
 "use client";
 
-import type { KonvaEventObject } from "konva/lib/Node";
-import { useRef, useState } from "react";
-import { Image, Layer, Line, Stage } from "react-konva";
-import useImage from 'use-image';
 import {
     createEdit,
     parseEditBody,
     useEdits,
     type LineBody,
 } from "@/hooks/useEdits";
+import { getUrl } from 'aws-amplify/storage';
+import type { KonvaEventObject } from "konva/lib/Node";
+import { useEffect, useRef, useState } from "react";
+import { Image, Layer, Line, Stage } from "react-konva";
+import useImage from 'use-image';
 
-export default function Canvas({ roomId, imageUrl }: { roomId: string, imageUrl: string }) {
+export default function Canvas({ roomId, imagePath }: { roomId: string, imagePath: string }) {
     const { edits, isLoading, error } = useEdits(roomId);
     const [currentLine, setCurrentLine] = useState<LineBody | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [imageUrl, setImageUrl] = useState<string>("");
     const isDrawingRef = useRef(false);
     const stageRef = useRef<any>(null);
+
+    useEffect(() => {
+        const fetchImageUrl = async () => {
+            try {
+                const { url } = await getUrl({
+                    path: imagePath,
+                    options: {
+                        validateObjectExistence: true, // 存在確認を有効化
+                    }
+                });
+                setImageUrl(url.toString());
+            } catch (err) {
+                console.error("Failed to get image URL:", err);
+            }
+        };
+        fetchImageUrl();
+    }, [imagePath]);
 
     const [image] = useImage(imageUrl);
 

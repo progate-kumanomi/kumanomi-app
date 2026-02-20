@@ -1,10 +1,7 @@
 import type { Schema } from "@/amplify/data/resource";
-import outputs from "@/amplify_outputs.json";
-import { Amplify } from "aws-amplify";
 import { generateClient } from "aws-amplify/data";
 import { useEffect, useState } from "react";
 
-Amplify.configure(outputs);
 const client = generateClient<Schema>();
 
 export type LineBody = { points: number[]; color: string; strokeWidth: number };

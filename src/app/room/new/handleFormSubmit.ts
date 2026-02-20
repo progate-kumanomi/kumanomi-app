@@ -1,11 +1,7 @@
 "use server";
 
-import type { Schema } from "@/amplify/data/resource";
-import { generateClient } from "aws-amplify/api";
+import { cookiesClient } from "@/utils/amplifyServerUtils";
 import { redirect } from "next/navigation";
-
-
-const client = generateClient<Schema>()
 
 export async function handleFormSubmit(formData: FormData) {
     const roomName = formData.get("roomName") as string;
@@ -18,7 +14,7 @@ export async function handleFormSubmit(formData: FormData) {
         throw new Error("画像パスは必須です");
     }
 
-    const result = await client.models.Room.create({
+    const result = await cookiesClient.models.Room.create({
         name: roomName,
         imagePath: imagePath,
     });
