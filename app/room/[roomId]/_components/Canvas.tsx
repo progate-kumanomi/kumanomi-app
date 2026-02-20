@@ -9,7 +9,7 @@ import {
     parseEditBody,
     useEdits,
     type LineBody,
-} from "./hooks/useEdits";
+} from "@/hooks/useEdits";
 
 export default function Canvas({ roomId, imageUrl }: { roomId: string, imageUrl: string }) {
     const { edits, isLoading, error } = useEdits(roomId);
