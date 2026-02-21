@@ -9,7 +9,7 @@ export default function Room({ roomId, imagePath }: { roomId: string; imagePath:
 
     return (
         <>
-            <Header stageRef={stageRef} />
+            <Header stageRef={stageRef} roomId={roomId} />
             <Canvas roomId={roomId} imagePath={imagePath} stageRef={stageRef} />
         </>
     );

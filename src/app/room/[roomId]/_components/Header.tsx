@@ -1,15 +1,9 @@
 "use client";
 
-function downloadURI(uri: string, name: string) {
-    var link = document.createElement('a');
-    link.download = name;
-    link.href = uri;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
+import { useRouter } from "next/navigation";
 
-export default function Header({ stageRef }: { stageRef: any }) {
+export default function Header({ stageRef, roomId }: { stageRef: any; roomId: string }) {
+    const router = useRouter();
     const handleShareClick = () => {
         if (navigator.share) {
             navigator.share({
@@ -30,9 +24,16 @@ export default function Header({ stageRef }: { stageRef: any }) {
             console.error('キャンバスのデータURLの取得に失敗しました:', error);
             return;
         }
-        console.log(uri);
-        downloadURI(uri, `${Date.now()}.png`);
-    }
+
+        try {
+            sessionStorage.setItem(`room-complete:${roomId}`, uri);
+        } catch (error) {
+            console.error('画像の保存に失敗しました:', error);
+            return;
+        }
+
+        router.push(`/room/${roomId}/complete`);
+    };
 
 
 
