@@ -1,4 +1,11 @@
+import type { Metadata } from "next";
 import { NewRoomForm } from "./_components/NewRoomForm";
+
+export const metadata: Metadata = {
+    title: "新しいルームを作成",
+    description: "共同で編集可能なルームを作ろう！",
+};
+
 
 export default async function Page() {
     return (
