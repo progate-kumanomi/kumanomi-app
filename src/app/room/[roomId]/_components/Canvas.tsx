@@ -15,6 +15,8 @@ import type { KonvaEventObject } from "konva/lib/Node";
 import { useRef, useState } from "react";
 import { Image, Layer, Stage } from "react-konva";
 import { DrawingLines } from "./DrawingLines";
+import ToolButton from "./ToolButton";
+import { Tool } from "./type";
 
 export default function Canvas({ roomId, imagePath, stageRef }: { roomId: string, imagePath: string, stageRef: any }) {
     const { edits, isLoading, error } = useEdits(roomId);
@@ -24,6 +26,7 @@ export default function Canvas({ roomId, imagePath, stageRef }: { roomId: string
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [color, setColor] = useState<string>("#000000");
     const [strokeWidth, setStrokeWidth] = useState<number>(2);
+    const [selectedTool, setSelectedTool] = useState<Tool>("brush");
 
     const { image, canvasSize, containerRef } = useCanvasImage(imagePath);
     const isDrawingRef = useRef(false);
@@ -137,21 +140,30 @@ export default function Canvas({ roomId, imagePath, stageRef }: { roomId: string
                 </div>
             </div>
             {/* カラーピッカー・太さスライダー */}
-            <div className="flex items-center space-x-4 mt-4 px-5">
-                <div className="flex items-center space-x-2">
-                    <label htmlFor="color" className="text-sm">Color:</label>
-                    <input type="color" id="color" value={color} onChange={(e) => setColor(e.target.value)} />
+            <div className="px-5 mt-4">
+                <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-2">
+                        <label htmlFor="color" className="text-sm">Color:</label>
+                        <input type="color" id="color" value={color} onChange={(e) => setColor(e.target.value)} />
+                    </div>
+                    <div className="flex items-center space-x-2">
+                        <label htmlFor="strokeWidth" className="text-sm">Stroke Width:</label>
+                        <input
+                            type="range"
+                            id="strokeWidth"
+                            min="1"
+                            max="20"
+                            value={strokeWidth}
+                            onChange={(e) => setStrokeWidth(parseInt(e.target.value))}
+                        />
+                    </div>
                 </div>
-                <div className="flex items-center space-x-2">
-                    <label htmlFor="strokeWidth" className="text-sm">Stroke Width:</label>
-                    <input
-                        type="range"
-                        id="strokeWidth"
-                        min="1"
-                        max="20"
-                        value={strokeWidth}
-                        onChange={(e) => setStrokeWidth(parseInt(e.target.value))}
-                    />
+            </div>
+            {/* ツール選択 */}
+            <div className="absolute bottom-0 w-full bg-white rounded-t-2xl shadow-[0_-4px_20px_rgba(0,0,0,0.4)]">
+                <div className="flex justify-center space-x-4 py-5">
+                    <ToolButton tool="brush" iconName="material-symbols:brush-outline" selectedTool={selectedTool} setSelectedTool={setSelectedTool} />
+                    <ToolButton tool="eraser" iconName="material-symbols:ink-eraser-outline" selectedTool={selectedTool} setSelectedTool={setSelectedTool} />
                 </div>
             </div>
         </>
