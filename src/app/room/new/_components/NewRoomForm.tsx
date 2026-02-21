@@ -12,7 +12,7 @@ export function NewRoomForm() {
     return (
         <>
             <form action={handleFormSubmit}>
-                <section className="bg-white p-5 rounded-lg shadow-md mt-10">
+                <section className="bg-white p-5 rounded-lg shadow-md mt-5">
                     <h2 className="text-2xl font-bold mb-5 text-[#ad3f58]">ルーム情報</h2>
 
                     <div className="mb-4">
@@ -30,7 +30,7 @@ export function NewRoomForm() {
                 </section>
                 <button
                     type="submit"
-                    className="flex items-center justify-center mt-10 w-full p-5 rounded-xl bg-[linear-gradient(179deg,rgba(236,11,87,1)_49%,rgba(184,4,65,1)_100%)] hover:opacity-90 transition-opacity"
+                    className="flex items-center justify-center mt-5 w-full p-5 rounded-xl bg-[linear-gradient(179deg,rgba(236,11,87,1)_49%,rgba(184,4,65,1)_100%)] hover:opacity-90 transition-opacity"
                     aria-label="ルームを作成"
                 >
                     <span className="text-white font-bold">ルームを作成</span>
