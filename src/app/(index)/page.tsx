@@ -1,5 +1,10 @@
 import RightLine from "@/components/RightLineIcon";
-import { SpotAllocationStrategy } from "aws-cdk-lib/aws-autoscaling";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Kumanomi",
+    description: "みんなと一緒に編集できる落書きアプリ",
+};
 
 export default async function Page() {
     return (

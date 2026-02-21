@@ -1,7 +1,11 @@
 "use client";
 
+import { DrawingLines } from "@/app/room/[roomId]/_components/DrawingLines";
 import DownloadIcon from "@/components/DownloadIcon";
-import { useEffect, useMemo, useState } from "react";
+import { useCanvasImage } from "@/hooks/useCanvasImage";
+import { parseEditBody, useEdits, type LineBody } from "@/hooks/useEdits";
+import { useRef } from "react";
+import { Image, Layer, Stage } from "react-konva";
 
 function downloadURI(uri: string, name: string) {
     const link = document.createElement("a");
@@ -12,38 +16,77 @@ function downloadURI(uri: string, name: string) {
     document.body.removeChild(link);
 }
 
-export default function CompleteViewer({ roomId }: { roomId: string }) {
-    const [imageUrl, setImageUrl] = useState<string | null>(null);
-    const storageKey = useMemo(() => `room-complete:${roomId}`, [roomId]);
-
-    useEffect(() => {
-        const stored = sessionStorage.getItem(storageKey);
-        if (stored) {
-            setImageUrl(stored);
-        }
-    }, [storageKey]);
+export default function CompleteViewer({ roomId, imagePath }: { roomId: string; imagePath: string }) {
+    const { edits, isLoading, error } = useEdits(roomId);
+    const stageRef = useRef<any>(null);
+    const { image, canvasSize, containerRef } = useCanvasImage(imagePath);
 
     const handleDownload = () => {
-        if (!imageUrl) return;
-        downloadURI(imageUrl, `${Date.now()}.png`);
+        if (!stageRef.current || !image) return;
+
+        // 元の画像サイズに合わせてpixelRatioを計算
+        const pixelRatio = image.naturalWidth / canvasSize.width;
+
+        const uri = stageRef.current.toDataURL({
+            pixelRatio: pixelRatio // 元の画像サイズで出力
+        });
+        downloadURI(uri, `${Date.now()}.png`);
     };
+
+    if (error) {
+        return (
+            <div className="px-10 pt-10">
+                <div className="bg-white rounded-lg px-4 pt-4 pb-6">
+                    <p className="text-red-600">エラーが発生しました: {error.message}</p>
+                </div>
+            </div>
+        );
+    }
+
+    const confirmedLines = edits
+        .filter((edit) => !edit.isSkipped)
+        .map(parseEditBody)
+        .filter((line): line is LineBody => line !== null);
 
     return (
         <>
-
             <div className="px-10 pt-10">
                 <div className="bg-white rounded-lg px-4 pt-4 pb-6">
                     <h1 className="text-2xl font-bold text-center text-[#AD3F58]">完成しました！</h1>
                     <div className="p-6">
-                        <img src={imageUrl ?? undefined} alt="完成画像" className="w-full h-auto border border-gray-200  " />
+                        <div className="w-full @container flex justify-center">
+                            <div
+                                ref={containerRef}
+                                className="border border-gray-200 w-[100cqw] h-[calc(100cqw*4/3)] md:h-[calc(100cqh-20rem)] md:w-[calc((100cqh-20rem)*3/4)]"
+                            >
+                                <Stage
+                                    ref={stageRef}
+                                    width={canvasSize.width}
+                                    height={canvasSize.height}
+                                >
+                                    <Layer>
+                                        <Image image={image} width={canvasSize.width} height={canvasSize.height} />
+                                    </Layer>
+                                    <Layer>
+                                        <DrawingLines
+                                            confirmedLines={confirmedLines}
+                                            pendingLines={[]}
+                                            currentLine={null}
+                                            canvasSize={canvasSize}
+                                        />
+                                    </Layer>
+                                </Stage>
+                            </div>
+                        </div>
                     </div>
                     <div className="flex justify-center">
                         <button
                             onClick={handleDownload}
-                            className="h-10 w-[70%] bg-[#FF789E] rounded-md flex flex-row items-center gap-2.5 justify-center"
+                            disabled={isLoading || !image}
+                            className="h-10 w-[70%] bg-[#FF789E] rounded-md flex flex-row items-center gap-2.5 justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             <DownloadIcon className="w-4 h-4" />
-                            <span className="font-semibold text-white ">保存する</span>
+                            <span className="font-semibold text-white">保存する</span>
                         </button>
                     </div>
                 </div>

@@ -13,7 +13,7 @@ export function useImageCrop() {
                     unit: '%',
                     width: 100,
                 },
-                2 / 3,
+                3 / 4,
                 width,
                 height
             ),

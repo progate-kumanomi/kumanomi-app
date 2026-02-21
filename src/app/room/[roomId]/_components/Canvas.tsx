@@ -1,5 +1,6 @@
 "use client";
 
+import { useCanvasImage } from "@/hooks/useCanvasImage";
 import {
     createEdit,
     parseEditBody,
@@ -10,11 +11,9 @@ import { usePendingEdits } from "@/hooks/usePendingEdits";
 import {
     normalizeCoordinate
 } from "@/utils/canvasCoordinates";
-import { getUrl } from 'aws-amplify/storage';
 import type { KonvaEventObject } from "konva/lib/Node";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Image, Layer, Stage } from "react-konva";
-import useImage from 'use-image';
 import { DrawingLines } from "./DrawingLines";
 
 export default function Canvas({ roomId, imagePath, stageRef }: { roomId: string, imagePath: string, stageRef: any }) {
@@ -23,48 +22,11 @@ export default function Canvas({ roomId, imagePath, stageRef }: { roomId: string
 
     const [currentLine, setCurrentLine] = useState<LineBody | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    const [imageUrl, setImageUrl] = useState<string>("");
-    const [canvasSize, setCanvasSize] = useState({ width: 800, height: 1200 });
     const [color, setColor] = useState<string>("#000000");
     const [strokeWidth, setStrokeWidth] = useState<number>(2);
 
-    const containerRef = useRef<HTMLDivElement>(null);
+    const { image, canvasSize, containerRef } = useCanvasImage(imagePath);
     const isDrawingRef = useRef(false);
-
-    // 画像URLを取得
-    useEffect(() => {
-        const fetchImageUrl = async () => {
-            try {
-                const { url } = await getUrl({
-                    path: imagePath,
-                    options: {
-                        validateObjectExistence: true,
-                    }
-                });
-                setImageUrl(url.toString());
-            } catch (err) {
-                console.error("Failed to get image URL:", err);
-            }
-        };
-        fetchImageUrl();
-    }, [imagePath]);
-
-    // キャンバスサイズを管理
-    useEffect(() => {
-        const updateCanvasSize = () => {
-            if (containerRef.current) {
-                const width = containerRef.current.offsetWidth;
-                const height = containerRef.current.offsetHeight;
-                setCanvasSize({ width, height });
-            }
-        };
-
-        updateCanvasSize();
-        window.addEventListener('resize', updateCanvasSize);
-        return () => window.removeEventListener('resize', updateCanvasSize);
-    }, []);
-
-    const [image] = useImage(imageUrl, 'anonymous');
 
     const getPointerPosition = () => {
         if (!stageRef.current) return null;
@@ -141,7 +103,7 @@ export default function Canvas({ roomId, imagePath, stageRef }: { roomId: string
                 <div className="w-full @container flex justify-center">
                     <div
                         ref={containerRef}
-                        className="border border-gray-300 w-[100cqw] h-[calc(100cqw*3/2)] md:h-[calc(100cqh-12rem)] md:w-[calc((100cqh-12rem)*2/3)]"
+                        className="border border-gray-300 w-[100cqw] h-[calc(100cqw*4/3)] md:h-[calc(100cqh-12rem)] md:w-[calc((100cqh-12rem)*3/4)]"
                     >
                         {errorMessage && (
                             <div className="bg-red-50 text-red-800 p-2 mb-2">
