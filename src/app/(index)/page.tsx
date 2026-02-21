@@ -10,7 +10,10 @@ export default async function Page() {
                         <img src="/logo.png" alt="Logo" className="w-10 h-10 m-3" />
                         <h1 className="text-xl font-bold mt-4">ロゴタイプ</h1>
                     </div>
-                    <p className="text-center text-4xl font-bold pt-5 mb-10">
+                    <p
+                        className="text-center text-4xl font-bold pt-5 mb-10"
+                        style={{ textShadow: "8px 8px 8px rgba(0,0,0,0.25)" }}
+                    >
                         リアルタイムで、<br />
                         みんなと一緒に編集
                     </p>
@@ -21,7 +24,7 @@ export default async function Page() {
                         </div>
                     </div>
                     <div className="px-5">
-                        <a href="/room/new" className="block mt-70 text-center text-2xl font-bold bg-white text-[#DD5E89] py-3 rounded-full w-full mx-auto">
+                        <a href="/room/new" className="block mt-25 text-center text-2xl font-bold bg-white text-[#DD5E89] py-3 rounded-full w-full mx-auto" style={{ boxShadow: "8px 8px 8px rgba(0,0,0,0.25)" }}>
                             <div className="relative flex items-center justify-center">
                                 <span className="text-center">使ってみる</span>
                                 <RightLine className="absolute right-8" />
