@@ -44,8 +44,9 @@ export default function Canvas({ roomId, imagePath, stageRef }: { roomId: string
         if (!normalized) return;
         setCurrentLine({
             points: [normalized.x, normalized.y],
-            color: color,
+            color: selectedTool === "eraser" ? "#FFFFFF" : color,
             strokeWidth: strokeWidth,
+            tool: selectedTool,
         });
     };
 

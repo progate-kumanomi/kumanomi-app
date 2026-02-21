@@ -1,6 +1,5 @@
 import type { LineBody } from "@/hooks/useEdits";
-import { scalePoints, scaleStrokeWidth } from "@/utils/canvasCoordinates";
-import { Line } from "react-konva";
+import { DrawnLine } from "./DrawnLine";
 
 interface DrawingLinesProps {
     confirmedLines: LineBody[];
@@ -18,56 +17,23 @@ export function DrawingLines({
     return (
         <>
             {confirmedLines.map((line, index) => (
-                <Line
+                <DrawnLine
                     key={`confirmed-${index}`}
-                    points={scalePoints(
-                        line.points,
-                        canvasSize.width,
-                        canvasSize.height
-                    )}
-                    stroke={line.color}
-                    strokeWidth={scaleStrokeWidth(
-                        line.strokeWidth,
-                        canvasSize.width
-                    )}
-                    tension={0.5}
-                    lineCap="round"
-                    lineJoin="round"
+                    line={line}
+                    canvasSize={canvasSize}
                 />
             ))}
             {pendingLines.map((line, index) => (
-                <Line
+                <DrawnLine
                     key={`pending-${index}`}
-                    points={scalePoints(
-                        line.points,
-                        canvasSize.width,
-                        canvasSize.height
-                    )}
-                    stroke={line.color}
-                    strokeWidth={scaleStrokeWidth(
-                        line.strokeWidth,
-                        canvasSize.width
-                    )}
-                    tension={0.5}
-                    lineCap="round"
-                    lineJoin="round"
+                    line={line}
+                    canvasSize={canvasSize}
                 />
             ))}
             {currentLine && (
-                <Line
-                    points={scalePoints(
-                        currentLine.points,
-                        canvasSize.width,
-                        canvasSize.height
-                    )}
-                    stroke={currentLine.color}
-                    strokeWidth={scaleStrokeWidth(
-                        currentLine.strokeWidth,
-                        canvasSize.width
-                    )}
-                    tension={0.5}
-                    lineCap="round"
-                    lineJoin="round"
+                <DrawnLine
+                    line={currentLine}
+                    canvasSize={canvasSize}
                 />
             )}
         </>
