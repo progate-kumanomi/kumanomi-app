@@ -17,21 +17,6 @@ export default function Header({ stageRef, roomId }: { stageRef: any; roomId: st
     };
 
     const handleCompleteClick = () => {
-        let uri: string;
-        try {
-            uri = stageRef.current.toDataURL();
-        } catch (error) {
-            console.error('キャンバスのデータURLの取得に失敗しました:', error);
-            return;
-        }
-
-        try {
-            sessionStorage.setItem(`room-complete:${roomId}`, uri);
-        } catch (error) {
-            console.error('画像の保存に失敗しました:', error);
-            return;
-        }
-
         router.push(`/room/${roomId}/complete`);
     };
 
