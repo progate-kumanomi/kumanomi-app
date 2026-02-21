@@ -32,8 +32,8 @@ export function useImageCrop() {
         const canvas = document.createElement('canvas');
         const scaleX = image.naturalWidth / image.width;
         const scaleY = image.naturalHeight / image.height;
-        canvas.width = crop.width;
-        canvas.height = crop.height;
+        canvas.width = crop.width * scaleX;
+        canvas.height = crop.height * scaleY;
         const ctx = canvas.getContext('2d');
         if (!ctx) {
             throw new Error('Failed to get canvas context');
@@ -46,8 +46,8 @@ export function useImageCrop() {
             crop.height * scaleY,
             0,
             0,
-            crop.width,
-            crop.height
+            crop.width * scaleX,
+            crop.height * scaleY
         );
         return new Promise((resolve, reject) => {
             canvas.toBlob((blob) => {
