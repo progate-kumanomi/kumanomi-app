@@ -1,6 +1,6 @@
 "use client";
 
-import Download from "@/components/Download";
+import DownloadIcon from "@/components/DownloadIcon";
 import { useEffect, useMemo, useState } from "react";
 
 function downloadURI(uri: string, name: string) {
@@ -42,7 +42,7 @@ export default function CompleteViewer({ roomId }: { roomId: string }) {
                             onClick={handleDownload}
                             className="h-10 w-[70%] bg-[#FF789E] rounded-md flex flex-row items-center gap-2.5 justify-center"
                         >
-                            <Download className="w-4 h-4" />
+                            <DownloadIcon className="w-4 h-4" />
                             <span className="font-semibold text-white ">保存する</span>
                         </button>
                     </div>

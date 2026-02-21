@@ -1,4 +1,4 @@
-import RightLine from "@/components/RightLine";
+import RightLine from "@/components/RightLineIcon";
 import { SpotAllocationStrategy } from "aws-cdk-lib/aws-autoscaling";
 
 export default async function Page() {

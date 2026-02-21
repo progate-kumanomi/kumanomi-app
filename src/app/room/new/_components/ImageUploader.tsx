@@ -1,6 +1,6 @@
 "use client";
 
-import Upload from "@/components/Upload";
+import UploadIcon from "@/components/UploadIcon";
 import { useImageCrop } from "@/hooks/useImageCrop";
 import { useImageUpload } from "@/hooks/useImageUpload";
 import React, { useRef, useState } from "react";
@@ -153,7 +153,7 @@ export function ImageUploader({ onImageUploaded }: { onImageUploaded: (path: str
                     </div>
                 ) : (
                     <div className="bg-white rounded-lg px-4 py-3 shadow-md flex flex-row items-center gap-3 cursor-pointer hover:shadow-lg hover:bg-gray-50 transition-all border border-gray-200">
-                        <Upload className="w-5 h-5" />
+                        <UploadIcon className="w-5 h-5" />
                         <span className="text-[#F37C88] font-medium">画像をアップロード</span>
                     </div>
                 )}
