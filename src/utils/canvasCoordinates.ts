@@ -3,7 +3,7 @@
  * 基準サイズ（800x1200）と現在のキャンバスサイズ間の座標変換を行う
  */
 
-export const BASE_WIDTH = 800;
+export const BASE_WIDTH = 900;
 export const BASE_HEIGHT = 1200;
 
 /**
