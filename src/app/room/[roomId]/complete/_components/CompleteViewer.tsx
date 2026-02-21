@@ -57,7 +57,7 @@ export default function CompleteViewer({ roomId, imagePath }: { roomId: string; 
                         <div className="w-full @container flex justify-center">
                             <div
                                 ref={containerRef}
-                                className="border border-gray-200 w-[100cqw] h-[calc(100cqw*3/2)] md:h-[calc(100cqh-20rem)] md:w-[calc((100cqh-20rem)*2/3)]"
+                                className="border border-gray-200 w-[100cqw] h-[calc(100cqw*4/3)] md:h-[calc(100cqh-20rem)] md:w-[calc((100cqh-20rem)*3/4)]"
                             >
                                 <Stage
                                     ref={stageRef}

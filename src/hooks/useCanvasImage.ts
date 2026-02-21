@@ -9,7 +9,7 @@ type CanvasSize = {
 
 export function useCanvasImage(
     imagePath: string,
-    initialSize: CanvasSize = { width: 800, height: 1200 }
+    initialSize: CanvasSize = { width: 900, height: 1200 }
 ) {
     const [imageUrl, setImageUrl] = useState<string>("");
     const [canvasSize, setCanvasSize] = useState<CanvasSize>(initialSize);
