@@ -54,7 +54,7 @@ export function CropModal({
                             crop={crop}
                             onChange={(_, percentCrop) => onCropChange(percentCrop)}
                             onComplete={(c) => onCropComplete(c)}
-                            aspect={2 / 3}
+                            aspect={3 / 4}
                             className="max-h-100 max-w-100"
                         >
                             <img

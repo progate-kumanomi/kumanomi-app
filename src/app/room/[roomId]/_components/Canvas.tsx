@@ -103,7 +103,7 @@ export default function Canvas({ roomId, imagePath, stageRef }: { roomId: string
                 <div className="w-full @container flex justify-center">
                     <div
                         ref={containerRef}
-                        className="border border-gray-300 w-[100cqw] h-[calc(100cqw*3/2)] md:h-[calc(100cqh-12rem)] md:w-[calc((100cqh-12rem)*2/3)]"
+                        className="border border-gray-300 w-[100cqw] h-[calc(100cqw*4/3)] md:h-[calc(100cqh-12rem)] md:w-[calc((100cqh-12rem)*3/4)]"
                     >
                         {errorMessage && (
                             <div className="bg-red-50 text-red-800 p-2 mb-2">
