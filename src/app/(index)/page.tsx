@@ -9,27 +9,32 @@ export const metadata: Metadata = {
 export default async function Page() {
     return (
         <>
-            <div className="min-h-screen w-full bg-linear-to-bl from-[#F7BB97] to-[#DD5E89]">
-                <div className="text-white">
-                    <div className="flex">
-                        <img src="/logo.png" alt="Logo" className="w-10 h-10 m-3" />
-                        <h1 className="text-xl font-bold mt-4">ロゴタイプ</h1>
-                    </div>
-                    <p
-                        className="text-center text-4xl font-bold pt-5 mb-10"
-                        style={{ textShadow: "8px 8px 8px rgba(0,0,0,0.25)" }}
-                    >
-                        リアルタイムで、<br />
-                        みんなと一緒に編集
-                    </p>
-                    <div className="flex mt-4 items-end">
+            <div className="min-h-screen w-full bg-linear-to-bl from-[#FF9F05] via-[#FF789E] to-[#F62D66]">
+                <div className="text-white pt-6">
+                    <div className="relative flex items-end">
                         <img src="/photosample.png" alt="Sample" className="w-3/5" />
-                        <div>
-                            <p className="ml-4 text-2xl pb-4">説明</p>
+
+                        {/* main headline slightly above the photo */}
+                        <div className="absolute right-0 top-0 mt-4 w-7/9 p-4 text-white">
+                            <p className="text-3xl font-bold leading-tight" style={{ lineHeight: '1.2', textShadow: "8px 8px 8px rgba(0,0,0,0.25)" }}>
+                                リアルタイムで、<br />
+                                みんなと一緒に編集
+                            </p>
+                        </div>
+                        {/* description bottom-aligned beside photo, avoiding overlap */}
+                        <div className="absolute right-0 bottom-0 mb-4 w-2/3 p-4 text-white">
+                            <p className="mt-2 text-2xl">説明</p>
                         </div>
                     </div>
+                    <p className="text-lg font-bold leading-tight w-full flex justify-center">
+                        URLだけで同時に編集できるWebアプリ
+                    </p>
+                    <div className="flex items-center mt-3 justify-center ">
+                        <img src="/logo.png" alt="Logo" className="w-25 h-25 m-3" />
+                        <h1 className="text-4xl font-bold">ロゴタイプ</h1>
+                    </div>
                     <div className="px-5">
-                        <a href="/room/new" className="block mt-25 text-center text-2xl font-bold bg-white text-[#DD5E89] py-3 rounded-full w-full mx-auto" style={{ boxShadow: "8px 8px 8px rgba(0,0,0,0.25)" }}>
+                        <a href="/room/new" className="block mt-5 text-center text-2xl font-bold bg-white text-[#DD5E89] py-3 rounded-full w-full mx-auto" style={{ boxShadow: "8px 8px 8px rgba(0,0,0,0.25)" }}>
                             <div className="relative flex items-center justify-center">
                                 <span className="text-center">使ってみる</span>
                                 <RightLine className="absolute right-8" />
