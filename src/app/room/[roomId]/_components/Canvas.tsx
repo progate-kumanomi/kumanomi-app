@@ -180,7 +180,7 @@ export default function Canvas({ roomId, imagePath, stageRef }: { roomId: string
             <div className="flex-1 px-5 flex flex-col overflow-y-auto">
                 {/* Undo/Redo */}
                 <div className="flex justify-center space-x-4 mb-4">
-                    <button onClick={handleUndo} disabled={!canUndo} className=" text-gray-800 font-bold rounded disabled:opacity-50 disabled:cursor-not-allowed">
+                    <button onClick={handleUndo} disabled={!canUndo} className="text-gray-800 font-bold rounded disabled:opacity-50 disabled:cursor-not-allowed">
                         <Icon className="w-8 h-8" icon="material-symbols:arrow-circle-left-outline-rounded" />
                     </button>
                     <button onClick={handleRedo} disabled={!canRedo} className="text-gray-800 font-bold rounded disabled:opacity-50 disabled:cursor-not-allowed">
