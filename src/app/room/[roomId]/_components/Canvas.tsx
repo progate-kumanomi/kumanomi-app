@@ -97,7 +97,7 @@ export default function Canvas({ roomId, imagePath, stageRef }: { roomId: string
     }
 
     const confirmedLines = edits
-        .filter((edit) => !edit.isSkipped)
+        .filter((edit) => !edit.skippedAt)
         .map(parseEditBody)
         .filter((line): line is LineBody => line !== null);
 
