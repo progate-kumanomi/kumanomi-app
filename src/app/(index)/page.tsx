@@ -10,8 +10,8 @@ export default async function Page() {
     return (
         <>
             <div className="min-h-screen w-full bg-linear-to-bl from-[#FF9F05] via-[#FF789E] to-[#F62D66]">
-                <div className="fixed left-0 w-[393px] h-[113px] bg-[linear-gradient(0deg,rgba(255,255,255,0)_0%,rgba(255,244,247,0.3)_50%,rgba(255,244,247,0.8)_100%)]" />
-                <div className="text-white pt-6">
+                <div className="fixed left-0 w-full h-[113px] bg-[linear-gradient(0deg,rgba(255,255,255,0)_0%,rgba(255,244,247,0.3)_50%,rgba(255,244,247,0.8)_100%)]" />
+                <div className="text-white pt-12">
 
                     <div className="relative flex items-end">
                         <img src="/photosample.png" alt="Sample" className="w-3/5" />
@@ -33,15 +33,14 @@ export default async function Page() {
                         </div>
 
                     </div>
-                    <p className="text-lg font-bold leading-tight w-full flex justify-center">
+                    <p className="text-lg font-bold leading-tight w-full flex justify-center mt-15" style={{ textShadow: "8px 8px 8px rgba(0,0,0,0.25)" }}>
                         URLだけで同時に編集できるWebアプリ
                     </p>
-                    <div className="flex items-center mt-3 justify-center ">
-                        <img src="/logo.png" alt="Logo" className="w-25 h-25 m-3" />
-                        <img src="/logotype.png" alt="Logotype" className="w-29 h-16 m-3" />
+                    <div className="flex items-center mt-6 justify-center ">
+                        <img src="/logotype.png" alt="Logotype" className="w-54 h-30 m-3" />
                     </div>
                     <div className="px-5">
-                        <a href="/room/new" className="block mt-5 text-center text-2xl font-bold bg-white text-[#DD5E89] py-3 rounded-full w-full mx-auto" style={{ boxShadow: "8px 8px 8px rgba(0,0,0,0.25)" }}>
+                        <a href="/room/new" className="block mt-8 text-center text-2xl font-bold bg-white text-[#DD5E89] py-3 rounded-full w-full mx-auto" style={{ boxShadow: "8px 8px 8px rgba(0,0,0,0.25)" }}>
                             <div className="relative flex items-center justify-center">
                                 <span className="text-center">使ってみる</span>
                                 <RightLine className="absolute right-8" />
