@@ -49,7 +49,7 @@ export default function Canvas({ roomId, imagePath, stageRef }: { roomId: string
     const canRedo = useMemo(() => {
         if (!creatorId) return false;
         const skippedEdit = [...edits]
-            .sort((a, b) => b.skippedAt! - a.skippedAt!)
+            .sort((a, b) => (b.skippedAt ?? 0) - (a.skippedAt ?? 0))
             .find((edit) => edit.skippedAt && edit.creatorId === creatorId);
 
         if (!skippedEdit) return false;
