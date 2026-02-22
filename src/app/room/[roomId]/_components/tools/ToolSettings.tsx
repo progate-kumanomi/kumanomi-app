@@ -12,5 +12,7 @@ export default function ToolSettings({ selectedTool, color, setColor, strokeWidt
             return (
                 <EraserSettings color={color} setColor={setColor} strokeWidth={strokeWidth} setStrokeWidth={setStrokeWidth} />
             );
+        default:
+            return <p>エラーが発生しました。ツールを選択しなおしてください。</p>
     }
 }
