@@ -4,15 +4,19 @@ import { useCanvasImage } from "@/hooks/useCanvasImage";
 import {
     createEdit,
     parseEditBody,
+    skipEdit,
+    unskipEdit,
     useEdits,
-    type LineBody,
+    type LineBody
 } from "@/hooks/useEdits";
 import { usePendingEdits } from "@/hooks/usePendingEdits";
 import {
     normalizeCoordinate
 } from "@/utils/canvasCoordinates";
+import { getCreatorId } from "@/utils/identity";
+import { Icon } from "@iconify/react";
 import type { KonvaEventObject } from "konva/lib/Node";
-import { useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Image, Layer, Stage } from "react-konva";
 import { DrawingLines } from "./DrawingLines";
 import ToolButton from "./ToolButton";
@@ -28,9 +32,42 @@ export default function Canvas({ roomId, imagePath, stageRef }: { roomId: string
     const [color, setColor] = useState<string>("#000000");
     const [strokeWidth, setStrokeWidth] = useState<number>(11);
     const [selectedTool, setSelectedTool] = useState<Tool>("brush");
+    const [creatorId, setCreatorId] = useState<string | null>(null);
 
     const { image, canvasSize, containerRef } = useCanvasImage(imagePath);
     const isDrawingRef = useRef(false);
+
+    useEffect(() => {
+        getCreatorId()
+            .then(setCreatorId)
+            .catch((err) => {
+                console.error("Failed to get creator ID:", err);
+                setErrorMessage("Failed to load your identity. Undo and redo are disabled.");
+            });
+    }, []);
+
+    const canUndo = useMemo(() => {
+        if (!creatorId) return false;
+        return edits.some((edit) => !edit.skippedAt && edit.creatorId === creatorId);
+    }, [edits, creatorId]);
+
+    const canRedo = useMemo(() => {
+        if (!creatorId) return false;
+        const skippedEdit = [...edits]
+            .sort((a, b) => (b.skippedAt ?? 0) - (a.skippedAt ?? 0))
+            .find((edit) => edit.skippedAt && edit.creatorId === creatorId);
+
+        if (!skippedEdit) return false;
+
+        // nextEditより新しい自分の編集があるかチェック
+        const hasNewerEdit = edits.some(
+            (edit) => !edit.skippedAt &&
+                edit.creatorId === creatorId &&
+                edit.timestamp > skippedEdit.timestamp
+        );
+
+        return !hasNewerEdit;
+    }, [edits, creatorId]);
 
     const getPointerPosition = () => {
         if (!stageRef.current) return null;
@@ -88,6 +125,48 @@ export default function Canvas({ roomId, imagePath, stageRef }: { roomId: string
         }
     };
 
+    const handleUndo = async () => {
+        // 現在のユーザーが行った変更のうちスキップされていない最後のものを見つける
+        try {
+            setErrorMessage(null);
+            if (!creatorId) return;
+            const lastEdit = [...edits]
+                .reverse()
+                .find((edit) => !edit.skippedAt && edit.creatorId === creatorId);
+
+            if (!lastEdit) {
+                return;
+            }
+
+            await skipEdit(roomId, lastEdit.timestamp);
+        } catch (error) {
+            const message =
+                error instanceof Error ? error.message : "Failed to undo";
+            setErrorMessage(message);
+            console.error("Error undoing edit:", error);
+        }
+    };
+
+    const handleRedo = async () => {
+        // 現在のユーザーが行った変更のうち最後にスキップされたものを見つける
+        try {
+            setErrorMessage(null);
+            if (!creatorId) return;
+            const nextEdit = [...edits]
+                .sort((a, b) => (b.skippedAt ?? 0) - (a.skippedAt ?? 0))
+                .find((edit) => edit.skippedAt && edit.creatorId === creatorId);
+            if (!nextEdit) {
+                return;
+            }
+            await unskipEdit(roomId, nextEdit.timestamp);
+        } catch (error) {
+            const message =
+                error instanceof Error ? error.message : "Failed to redo";
+            setErrorMessage(message);
+            console.error("Error redoing edit:", error);
+        }
+    };
+
     if (error) {
         return (
             <div className="border border-gray-300 p-5 text-red-600">
@@ -102,8 +181,17 @@ export default function Canvas({ roomId, imagePath, stageRef }: { roomId: string
         .filter((line): line is LineBody => line !== null);
 
     return (
-        <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
-            <div className="flex-1 px-5 flex flex-col justify-center overflow-auto">
+        <div className="flex flex-col flex-1 min-h-0">
+            <div className="flex-1 px-5 flex flex-col overflow-y-auto">
+                {/* Undo/Redo */}
+                <div className="flex justify-center space-x-4 mb-4">
+                    <button onClick={handleUndo} disabled={!canUndo} className="text-gray-800 font-bold rounded disabled:opacity-50 disabled:cursor-not-allowed">
+                        <Icon className="w-8 h-8" icon="material-symbols:arrow-circle-left-outline-rounded" />
+                    </button>
+                    <button onClick={handleRedo} disabled={!canRedo} className="text-gray-800 font-bold rounded disabled:opacity-50 disabled:cursor-not-allowed">
+                        <Icon className="w-8 h-8" icon="material-symbols:arrow-circle-right-outline-rounded" />
+                    </button>
+                </div>
                 {/* キャンバス */}
                 <div className="w-full @container flex justify-center">
                     <div

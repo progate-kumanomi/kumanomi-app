@@ -19,7 +19,7 @@ const schema = a.schema({
     roomId: a.id().required(),
     type: a.enum(["line"]),
     body: a.json().required(),
-    creatorId: a.string().required(),
+    creatorId: a.string(),
     skippedAt: a.timestamp(),
   })
     .identifier(["roomId", "timestamp"])

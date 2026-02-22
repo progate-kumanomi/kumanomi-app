@@ -81,6 +81,40 @@ export async function createEdit(
     }
 }
 
+export async function skipEdit(roomId: string, timestamp: number): Promise<void> {
+    try {
+        const result = await client.models.Edit.update({
+            roomId,
+            timestamp,
+            skippedAt: Date.now(),
+        });
+
+        if (result.errors && result.errors.length > 0) {
+            throw new Error(`Failed to skip edit: ${result.errors[0]}`);
+        }
+    } catch (error) {
+        console.error("Failed to skip edit:", error);
+        throw error;
+    }
+}
+
+export async function unskipEdit(roomId: string, timestamp: number): Promise<void> {
+    try {
+        const result = await client.models.Edit.update({
+            roomId,
+            timestamp,
+            skippedAt: null,
+        });
+
+        if (result.errors && result.errors.length > 0) {
+            throw new Error(`Failed to unskip edit: ${result.errors[0]}`);
+        }
+    } catch (error) {
+        console.error("Failed to unskip edit:", error);
+        throw error;
+    }
+}
+
 export function parseEditBody(edit: Schema["Edit"]["type"]): LineBody | null {
     try {
         if (typeof edit.body !== "string") {
