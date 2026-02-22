@@ -1,4 +1,5 @@
 import type { Schema } from "@/amplify/data/resource";
+import { getCreatorId } from "@/utils/identity";
 import { generateClient } from "aws-amplify/data";
 import { useEffect, useState } from "react";
 
@@ -54,6 +55,7 @@ export async function createEdit(
     body: LineBody
 ): Promise<Schema["Edit"]["type"]> {
     const timestamp = Date.now();
+    const creatorId = await getCreatorId();
 
     try {
         const result = await client.models.Edit.create({
@@ -61,7 +63,7 @@ export async function createEdit(
             timestamp,
             type: "line",
             body: JSON.stringify(body),
-            isSkipped: false,
+            creatorId,
         });
 
         if (result.errors && result.errors.length > 0) {

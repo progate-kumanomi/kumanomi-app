@@ -19,7 +19,8 @@ const schema = a.schema({
     roomId: a.id().required(),
     type: a.enum(["line"]),
     body: a.json().required(),
-    isSkipped: a.boolean().required(),
+    creatorId: a.string().required(),
+    skippedAt: a.timestamp(),
   })
     .identifier(["roomId", "timestamp"])
     .authorization((allow) => [allow.guest()]),
