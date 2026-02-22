@@ -14,6 +14,7 @@ export default function ToolButton({ tool, iconName, selectedTool, setSelectedTo
         <button
             onClick={handleClick}
             className={`px-4 py-2 rounded ${isActive ? "bg-[#FD4477] text-white" : " text-gray-700 hover:bg-gray-300"}`}
+            aria-pressed={isActive}
         >
             <Icon icon={iconName} className="w-7 h-7" />
         </button>
