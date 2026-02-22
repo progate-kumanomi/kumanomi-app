@@ -38,7 +38,12 @@ export default function Canvas({ roomId, imagePath, stageRef }: { roomId: string
     const isDrawingRef = useRef(false);
 
     useEffect(() => {
-        getCreatorId().then(setCreatorId);
+        getCreatorId()
+            .then(setCreatorId)
+            .catch((err) => {
+                console.error("Failed to get creator ID:", err);
+                setErrorMessage("Failed to load your identity. Undo and redo are disabled.");
+            });
     }, []);
 
     const canUndo = useMemo(() => {
