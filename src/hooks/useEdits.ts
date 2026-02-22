@@ -1,10 +1,18 @@
 import type { Schema } from "@/amplify/data/resource";
+import { getCreatorId } from "@/utils/identity";
 import { generateClient } from "aws-amplify/data";
 import { useEffect, useState } from "react";
 
 const client = generateClient<Schema>();
 
-export type LineBody = { points: number[]; color: string; strokeWidth: number };
+export type Tool = "brush" | "eraser";
+
+export type LineBody = {
+    points: number[];
+    color: string;
+    strokeWidth: number;
+    tool?: Tool;
+};
 
 export function useEdits(roomId: string | null) {
     const [edits, setEdits] = useState<Schema["Edit"]["type"][]>([]);
@@ -47,6 +55,7 @@ export async function createEdit(
     body: LineBody
 ): Promise<Schema["Edit"]["type"]> {
     const timestamp = Date.now();
+    const creatorId = await getCreatorId();
 
     try {
         const result = await client.models.Edit.create({
@@ -54,7 +63,7 @@ export async function createEdit(
             timestamp,
             type: "line",
             body: JSON.stringify(body),
-            isSkipped: false,
+            creatorId,
         });
 
         if (result.errors && result.errors.length > 0) {
