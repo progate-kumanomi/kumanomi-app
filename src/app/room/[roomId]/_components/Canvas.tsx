@@ -17,7 +17,7 @@ import { Image, Layer, Stage } from "react-konva";
 import { DrawingLines } from "./DrawingLines";
 import ToolButton from "./ToolButton";
 import ToolSettings from "./tools/ToolSettings";
-import { Tool } from "./type";
+import type { Tool } from "./type";
 
 export default function Canvas({ roomId, imagePath, stageRef }: { roomId: string, imagePath: string, stageRef: any }) {
     const { edits, isLoading, error } = useEdits(roomId);
