@@ -153,7 +153,7 @@ export default function Canvas({ roomId, imagePath, stageRef }: { roomId: string
             setErrorMessage(null);
             if (!creatorId) return;
             const nextEdit = [...edits]
-                .sort((a, b) => b.skippedAt! - a.skippedAt!)
+                .sort((a, b) => (b.skippedAt ?? 0) - (a.skippedAt ?? 0))
                 .find((edit) => edit.skippedAt && edit.creatorId === creatorId);
             if (!nextEdit) {
                 return;
