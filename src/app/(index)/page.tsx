@@ -38,7 +38,7 @@ export default async function Page() {
                     </p>
                     <div className="flex items-center mt-3 justify-center ">
                         <img src="/logo.png" alt="Logo" className="w-25 h-25 m-3" />
-                        <img src="/logotype.png" alt="Logotype" className="w-32 h-16 m-3" />
+                        <img src="/logotype.png" alt="Logotype" className="w-29 h-16 m-3" />
                     </div>
                     <div className="px-5">
                         <a href="/room/new" className="block mt-5 text-center text-2xl font-bold bg-white text-[#DD5E89] py-3 rounded-full w-full mx-auto" style={{ boxShadow: "8px 8px 8px rgba(0,0,0,0.25)" }}>
