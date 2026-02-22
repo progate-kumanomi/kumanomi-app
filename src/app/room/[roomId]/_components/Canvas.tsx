@@ -160,7 +160,7 @@ export default function Canvas({ roomId, imagePath, stageRef }: { roomId: string
             setErrorMessage(message);
             console.error("Error redoing edit:", error);
         }
-    }
+    };
 
     if (error) {
         return (
