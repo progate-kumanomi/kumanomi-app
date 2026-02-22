@@ -4,11 +4,13 @@ import { useEffect, useState } from "react";
 
 const client = generateClient<Schema>();
 
+export type Tool = "brush" | "eraser";
+
 export type LineBody = {
     points: number[];
     color: string;
     strokeWidth: number;
-    tool?: "brush" | "eraser";
+    tool?: Tool;
 };
 
 export function useEdits(roomId: string | null) {

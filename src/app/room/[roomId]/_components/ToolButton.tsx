@@ -1,7 +1,7 @@
 "use client";
 
 import { Icon } from "@iconify/react";
-import { Tool } from "./type";
+import type { Tool } from "./type";
 
 export default function ToolButton({ tool, iconName, selectedTool, setSelectedTool }: { tool: Tool; iconName: string; selectedTool: Tool; setSelectedTool: (tool: Tool) => void }) {
     const isActive = tool === selectedTool;
