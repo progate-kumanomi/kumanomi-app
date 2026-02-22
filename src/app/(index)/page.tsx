@@ -10,7 +10,9 @@ export default async function Page() {
     return (
         <>
             <div className="min-h-screen w-full bg-linear-to-bl from-[#FF9F05] via-[#FF789E] to-[#F62D66]">
+                <div className="fixed left-0 w-[393px] h-[113px] bg-[linear-gradient(0deg,rgba(255,255,255,0)_0%,rgba(255,244,247,0.3)_50%,rgba(255,244,247,0.8)_100%)]" />
                 <div className="text-white pt-6">
+
                     <div className="relative flex items-end">
                         <img src="/photosample.png" alt="Sample" className="w-3/5" />
 
@@ -22,16 +24,21 @@ export default async function Page() {
                             </p>
                         </div>
                         {/* description bottom-aligned beside photo, avoiding overlap */}
-                        <div className="absolute right-0 bottom-0 mb-4 w-2/3 p-4 text-white">
-                            <p className="mt-2 text-2xl">説明</p>
+                        <div className="right-0 bottom-0 mb-4 w-2/3 text-white">
+                            <p className="text-md leading-relaxed">
+                                ◀ペン、スタンプ、<br />
+                                <span className="pl-4">テキストツールで</span><br />
+                                <span className="pl-4">自由に描ける</span>
+                            </p>
                         </div>
+
                     </div>
                     <p className="text-lg font-bold leading-tight w-full flex justify-center">
                         URLだけで同時に編集できるWebアプリ
                     </p>
                     <div className="flex items-center mt-3 justify-center ">
                         <img src="/logo.png" alt="Logo" className="w-25 h-25 m-3" />
-                        <h1 className="text-4xl font-bold">ロゴタイプ</h1>
+                        <img src="/logotype.png" alt="Logotype" className="w-32 h-16 m-3" />
                     </div>
                     <div className="px-5">
                         <a href="/room/new" className="block mt-5 text-center text-2xl font-bold bg-white text-[#DD5E89] py-3 rounded-full w-full mx-auto" style={{ boxShadow: "8px 8px 8px rgba(0,0,0,0.25)" }}>
