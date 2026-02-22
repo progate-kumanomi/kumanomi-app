@@ -4,7 +4,14 @@ import { useEffect, useState } from "react";
 
 const client = generateClient<Schema>();
 
-export type LineBody = { points: number[]; color: string; strokeWidth: number };
+export type Tool = "brush" | "eraser";
+
+export type LineBody = {
+    points: number[];
+    color: string;
+    strokeWidth: number;
+    tool?: Tool;
+};
 
 export function useEdits(roomId: string | null) {
     const [edits, setEdits] = useState<Schema["Edit"]["type"][]>([]);
