@@ -44,15 +44,17 @@ export default function ColorSetting({
 
     return (
         <>
-            <div
+            <button
+                type="button"
                 onClick={() => setShowPicker(!showPicker)}
                 className={`w-10 h-10 rounded-full cursor-pointer border-2 border-gray-800 transition-transform duration-200 hover:scale-110 p-1 bg-white flex items-center justify-center ${className || ''}`}
+                aria-label="Open color picker"
             >
                 <div
                     className="w-full h-full rounded-full"
                     style={{ backgroundColor: color }}
                 />
-            </div>
+            </button>
             {showPicker &&
                 createPortal(
                     <>
